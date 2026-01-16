@@ -6,6 +6,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     float movex;
     float movey;
+    int score;
     [SerializeField] float speed = 5f;
     Rigidbody2D rb;
     [SerializeField] float jumpheight = 1f;
@@ -13,6 +14,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        score = 0;
     }
 
     // Update is called once per frame
@@ -42,6 +44,15 @@ public class NewMonoBehaviourScript : MonoBehaviour
         if (collision.gameObject.CompareTag("ground"))
         {
             grounded = true;
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("collectible"))
+        {
+            score++;
+            other.gameObject.SetActive(false);
+            Debug.Log("score " + score);
         }
     }
 
