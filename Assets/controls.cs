@@ -7,18 +7,26 @@ public class NewMonoBehaviourScript : MonoBehaviour
     float movex;
     float movey;
     [SerializeField] float speed = 5f;
-
+    Rigidbody2D rb;
+    [SerializeField] float jumpheight = 1f;
+    bool grounded;
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        float xmovedist = movex * speed * Time.deltaTime;
-        float ymovedist = movey * speed * Time.deltaTime;
-        transform.position = new Vector2(transform.position.x + xmovedist, transform.position.y + ymovedist);
+        //float xmovedist = movex * speed * Time.deltaTime;
+        //float ymovedist = movey * speed * Time.deltaTime;
+        //transform.position = new Vector2(transform.position.x + xmovedist, transform.position.y + ymovedist);
+        //for moving without rigid body
+        rb.linearVelocity = new Vector2(movex * speed, rb.linearVelocity.y);
+        if (movey > 0 && grounded)
+        {
+            rb.AddForce(new Vector2(0, jumpheight),ForceMode2D.Impulse);
+        }
     }
     void OnMove(InputValue value)
     {
@@ -27,5 +35,21 @@ public class NewMonoBehaviourScript : MonoBehaviour
         movey = v.y;
         Debug.Log("X, " + movex);
         Debug.Log("Y, " + movey);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("ground"))
+        {
+            grounded = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("ground"))
+        {
+            grounded = false;
+        }
     }
 }
